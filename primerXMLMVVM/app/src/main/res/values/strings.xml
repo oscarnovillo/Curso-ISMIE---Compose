@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">primerXMLMVVM</string>
+    <string name="sumar">sumar</string>
+    <string name="restar">restar</string>
 </resources>
