@@ -11,7 +11,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.primerxmlmvvm.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 
@@ -64,6 +66,17 @@ class MainActivity : AppCompatActivity() {
                         Timber.d("error mostrado")
                         Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
                         viewModel.handleEvent(MainEvent.ErrorMostrado)
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                withContext(Dispatchers.Main.immediate ) {
+                    viewModel.uiError.collect {
+                        Timber.d("error mostrado Channel")
+                        Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
