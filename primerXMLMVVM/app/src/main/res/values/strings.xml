@@ -2,4 +2,7 @@
     <string name="app_name">primerXMLMVVM</string>
     <string name="sumar">sumar</string>
     <string name="restar">restar</string>
+    <string name="masuno">+1</string>
+    <string name="menosuno">-1</string>
+    <string name="cero">0</string>
 </resources>

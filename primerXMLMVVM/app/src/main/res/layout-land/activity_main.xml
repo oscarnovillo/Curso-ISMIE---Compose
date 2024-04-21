@@ -6,14 +6,14 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.main.MainActivity">
 
     <TextView
         android:id="@+id/textView"
         style="@style/texto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="@string/cero"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:id="@+id/buttonSumar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+1"
+        android:text="@string/masuno"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/buttonRestar"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
         android:id="@+id/buttonRestar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-1"
+        android:text="@string/menosuno"
         app:layout_constraintTop_toTopOf="@id/buttonSumar"
         app:layout_constraintBottom_toBottomOf="@id/buttonSumar"
         app:layout_constraintEnd_toEndOf="parent"
