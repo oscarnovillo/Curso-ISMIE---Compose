@@ -36,6 +36,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
 
     }
 }
@@ -49,6 +50,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     implementation(libs.bundles.viewmodel)
+
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

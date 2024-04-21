@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
 
 class MainViewModel : ViewModel() {
 
@@ -25,10 +26,12 @@ class MainViewModel : ViewModel() {
 
     private fun sumar() {
         _uiState.update { _uiState.value.copy(contador = _uiState.value.contador + 1) }
+        Timber.d("sumar")
     }
 
     private fun restar() {
         _uiState.update { _uiState.value.copy(contador = _uiState.value.contador - 1) }
+        Timber.d("restar")
     }
 
 
