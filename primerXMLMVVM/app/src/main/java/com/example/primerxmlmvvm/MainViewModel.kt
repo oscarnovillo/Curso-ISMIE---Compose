@@ -8,15 +8,26 @@ import kotlinx.coroutines.flow.update
 
 class MainViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MainState(0))
+    private val _uiState = MutableStateFlow(MainState(0,null))
     val uiState: StateFlow<MainState> get() = _uiState
+    fun handleEvent(event: MainEvent) {
+        when (event) {
+            MainEvent.Sumar -> {
+                sumar()
+            }
+            MainEvent.Restar -> {
+                restar()
+            }
 
+            MainEvent.ErrorMostrado -> TODO()
+        }
+    }
 
-    fun sumar() {
+    private fun sumar() {
         _uiState.update { _uiState.value.copy(contador = _uiState.value.contador + 1) }
     }
 
-    fun restar() {
+    private fun restar() {
         _uiState.update { _uiState.value.copy(contador = _uiState.value.contador - 1) }
     }
 

@@ -1,9 +1,6 @@
 package com.example.primerxmlmvvm
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.primerxmlmvvm.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
-private const val TEXT_VIEW = "text_view"
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,17 +41,11 @@ class MainActivity : AppCompatActivity() {
                 insets
             }
 
-
-//            savedInstanceState?.let {
-//                textView.text = savedInstanceState.getString(TEXT_VIEW)
-//            }
-
-
             buttonSumar.setOnClickListener{
-                viewModel.sumar()
+                viewModel.handleEvent(MainEvent.Sumar)
             }
             buttonRestar.setOnClickListener{
-                viewModel.restar()
+                viewModel.handleEvent(MainEvent.Restar)
             }
 
 
@@ -74,9 +64,4 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //save instance state
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putString(TEXT_VIEW, binding.textView.text.toString())
-//    }
 }
