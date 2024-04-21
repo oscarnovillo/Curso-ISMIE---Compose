@@ -1,6 +1,7 @@
-package com.example.primerxmlmvvm
+package com.example.primerxmlmvvm.ui.main
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.primerxmlmvvm.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,10 +44,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             buttonSumar.setOnClickListener{
-                viewModel.handleEvent(MainEvent.Sumar)
+                viewModel.handleEvent(MainEvent.Sumar(1))
             }
             buttonRestar.setOnClickListener{
-                viewModel.handleEvent(MainEvent.Restar)
+                viewModel.handleEvent(MainEvent.Restar(1))
             }
 
 
@@ -58,6 +60,11 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { mainState ->
                     binding.textView.text = mainState.contador.toString()
+                    mainState.error?.let {
+                        Timber.d("error mostrado")
+                        Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
+                        viewModel.handleEvent(MainEvent.ErrorMostrado)
+                    }
                 }
             }
         }

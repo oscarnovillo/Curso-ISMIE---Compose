@@ -1,4 +1,4 @@
-package com.example.primerxmlmvvm
+package com.example.primerxmlmvvm.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import timber.log.Timber
+import kotlin.random.Random
 
 class MainViewModel : ViewModel() {
 
@@ -13,27 +14,35 @@ class MainViewModel : ViewModel() {
     val uiState: StateFlow<MainState> get() = _uiState
     fun handleEvent(event: MainEvent) {
         when (event) {
-            MainEvent.Sumar -> {
-                sumar()
-            }
-            MainEvent.Restar -> {
-                restar()
+
+            MainEvent.ErrorMostrado ->{
+                _uiState.update{_uiState.value.copy(error = null)}
+
             }
 
-            MainEvent.ErrorMostrado -> TODO()
+            is MainEvent.Restar -> restar(event.incremento)
+
+            is MainEvent.Sumar -> sumar(event.incremento)
         }
     }
 
-    private fun sumar() {
-        _uiState.update { _uiState.value.copy(contador = _uiState.value.contador + 1) }
-        Timber.d("sumar")
+    private fun operacion( op:(Int,Int) -> Int,incremento: Int){
+        if (Random.nextBoolean())
+            _uiState.update{_uiState.value.copy(contador = op(_uiState.value.contador,incremento))}
+        else{
+            _uiState.update{_uiState.value.copy(error = "Error aleatorio")}
+            Timber.d("Error aleatorio")
+        }
+
     }
 
-    private fun restar() {
-        _uiState.update { _uiState.value.copy(contador = _uiState.value.contador - 1) }
-        Timber.d("restar")
+    private fun sumar(incremento:Int) {
+        operacion(Int::plus, incremento)
     }
 
+    private fun restar(incremento : Int) {
+        operacion(Int::minus,incremento)
+    }
 
 }
 
