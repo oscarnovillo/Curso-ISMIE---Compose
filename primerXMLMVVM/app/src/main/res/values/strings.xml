@@ -5,4 +5,5 @@
     <string name="masuno">+1</string>
     <string name="menosuno">-1</string>
     <string name="cero">0</string>
+    <string name="error">Error aleatory Chanel</string>
 </resources>
