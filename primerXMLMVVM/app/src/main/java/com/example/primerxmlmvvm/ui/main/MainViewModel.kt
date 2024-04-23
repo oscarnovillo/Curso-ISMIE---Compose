@@ -1,8 +1,10 @@
 package com.example.primerxmlmvvm.ui.main
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.primerxmlmvvm.R
+import com.example.primerxmlmvvm.common.StringProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,9 +12,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.random.Random
 
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val stringProvider: StringProvider,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainState(0,null))
     val uiState: StateFlow<MainState> get() = _uiState
@@ -42,9 +48,9 @@ class MainViewModel : ViewModel() {
         else{
             //_uiState.update{_uiState.value.copy(error = "Error aleatorio")}
             viewModelScope.launch {
-                _uiError.send("Error aleatorio Chanel")
+                _uiError.send(stringProvider.getString(R.string.error))
             }
-            Timber.d("Error aleatorio")
+            Timber.d(stringProvider.getString(R.string.error))
         }
 
     }
@@ -59,21 +65,3 @@ class MainViewModel : ViewModel() {
 
 }
 
-
-/**
- * Factory class to instantiate the [ViewModel] instance.
- */
-class MainViewModelFactory(
-
-
-    ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return MainViewModel(
-
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
