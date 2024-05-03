@@ -55,6 +55,10 @@ dependencies {
 
     implementation(libs.timber)
 
+    // Fragments
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
     // Hilt
     implementation(libs.hilt.core)
     kapt(libs.hilt.compiler)

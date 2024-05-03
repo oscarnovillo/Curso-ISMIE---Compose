@@ -1,47 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
+
     tools:context=".ui.main.MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cero"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:navGraph="@navigation/navigation"
+        app:defaultNavHost="true"
         app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <Button
-        android:id="@+id/buttonSumar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sumar"
-
-        app:layout_constraintTop_toBottomOf="@id/textView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buttonRestar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintVertical_bias="0.1"
-        />
-
-    <Button
-        android:id="@+id/buttonRestar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/restar"
-        android:layout_marginStart="@dimen/margin_little"
-        app:layout_constraintTop_toTopOf="@id/buttonSumar"
-        app:layout_constraintStart_toEndOf="@id/buttonSumar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/buttonSumar"
-     />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavView"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        app:labelVisibilityMode="labeled"
+        android:padding="0dp"
+        app:itemIconSize="30dp"
+        app:itemIconTint="@color/design_default_color_on_secondary"
+
+        app:itemPaddingBottom="4dp"
+        app:itemPaddingTop="4dp"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragmentContainerView"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+        app:menu="@menu/menu_nav"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

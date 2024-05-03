@@ -1,4 +1,4 @@
-package com.example.primerxmlmvvm.ui.main
+package com.example.primerxmlmvvm.ui.suma
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,29 +16,29 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class SumaViewModel @Inject constructor(
     private val stringProvider: StringProvider,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MainState(0,null))
-    val uiState: StateFlow<MainState> get() = _uiState
+    private val _uiState = MutableStateFlow(SumaState(0,null))
+    val uiState: StateFlow<SumaState> get() = _uiState
 
 
     private val _uiError = Channel<String>()
     val uiError = _uiError.receiveAsFlow()
 
 
-    fun handleEvent(event: MainEvent) {
+    fun handleEvent(event: SumaEvent) {
         when (event) {
 
-            MainEvent.ErrorMostrado ->{
+            SumaEvent.ErrorMostrado ->{
                 _uiState.update{_uiState.value.copy(error = null)}
 
             }
 
-            is MainEvent.Restar -> restar(event.incremento)
+            is SumaEvent.Restar -> restar(event.incremento)
 
-            is MainEvent.Sumar -> sumar(event.incremento)
+            is SumaEvent.Sumar -> sumar(event.incremento)
         }
     }
 
