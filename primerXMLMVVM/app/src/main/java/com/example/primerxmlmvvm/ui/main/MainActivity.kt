@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
             navController = navHost.navController
             binding.bottomNavView.setupWithNavController(navController)
+
         }
     }
 

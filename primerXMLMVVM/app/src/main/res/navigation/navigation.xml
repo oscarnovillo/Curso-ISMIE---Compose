@@ -8,10 +8,28 @@
     <fragment
         android:id="@+id/sumarFragment"
         android:name="com.example.primerxmlmvvm.ui.suma.SumaFragment"
-        android:label="SumaFragment" />
+        android:label="SumaFragment"
+        tools:layout="@layout/fragment_suma">
+
+    </fragment>
     <fragment
         android:id="@+id/listadoFragment"
-        android:name="com.example.primerxmlmvvm.ui.listado.ListadoFragment"
+        android:name="com.example.primerxmlmvvm.ui.coches.listado.ListadoFragment"
         android:label="fragment_listado"
-        tools:layout="@layout/fragment_listado" />
+        tools:layout="@layout/fragment_listado_coches">
+        <action
+            android:id="@+id/action_listadoFragment_to_detalleFragment"
+            app:destination="@id/detalleFragment" />
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/detalleFragment"
+        android:name="com.example.primerxmlmvvm.ui.coches.detalle.DetalleFragment"
+        android:label="DetalleFragment"
+        tools:layout="@layout/fragment_detalle_coches">
+        <argument
+            android:name="matricula"
+            app:argType="string" />
+    </fragment>
 </navigation>
