@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +50,12 @@ class DetalleFragment : Fragment() {
 
 
         with(binding) {
+            binding.buttonDelete.setOnClickListener {
+
+                viewModel.handleEvent(DetalleEvent.DelCoche)
+            }
+
+
             viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.uiState.collect { mainState ->
@@ -60,6 +67,13 @@ class DetalleFragment : Fragment() {
                             Timber.d("error mostrado")
                             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
                             viewModel.handleEvent(DetalleEvent.MensajeMostrado)
+                        }
+                        if (mainState.borrado)
+                        {
+                            //findNavController().navigateUp()
+                             val action = DetalleFragmentDirections.actionDetalleFragmentToListadoFragment()
+                            findNavController().navigate(action)
+                            //viewModel.handleEvent(DetalleEvent.BorradoMostrado)
                         }
                     }
                 }

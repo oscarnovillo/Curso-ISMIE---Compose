@@ -3,6 +3,7 @@ package com.example.primerxmlmvvm.ui.coches.detalle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.primerxmlmvvm.di.IoDispatcher
+import com.example.primerxmlmvvm.domain.usecases.coches.DelCoche
 import com.example.primerxmlmvvm.domain.usecases.coches.GetCoche
 import com.example.primerxmlmvvm.ui.coches.detalle.DetalleContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetalleViewModel @Inject constructor(
     val getCoche: GetCoche,
+    val delCoche: DelCoche,
     @IoDispatcher val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -37,6 +39,18 @@ class DetalleViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(coche = getCoche.invoke(event.matricula))
                 }
 
+            DetalleEvent.DelCoche -> {
+                viewModelScope.launch(dispatcher) {
+                    _uiState.value.coche?.let {
+                        delCoche(it)
+                        _uiState.value = _uiState.value.copy(borrado  = true)
+                    }
+                }
+            }
+
+            DetalleEvent.BorradoMostrado ->{
+                _uiState.value = _uiState.value.copy(borrado = false)
+            }
         }
     }
 

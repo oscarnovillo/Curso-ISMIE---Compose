@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.primerxmlmvvm.data.modelo.CocheEntity
 
-@Database(entities = [CocheEntity::class], version = 2)
+@Database(entities = [CocheEntity::class], version = 1, exportSchema = true)
 @TypeConverters(LocalDateConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cocheDao(): CocheDao

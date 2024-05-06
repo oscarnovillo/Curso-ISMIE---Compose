@@ -32,6 +32,10 @@ class CocheRepository @Inject constructor(
         return cocheDao.getCoche(matricula)?.toCoche()
 
     }
+
+    fun delCoche(coche: Coche): Any {
+        return cocheDao.delete(coche.toCocheEntity())
+    }
 }
 
 

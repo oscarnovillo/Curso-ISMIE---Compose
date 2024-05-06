@@ -10,8 +10,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import com.example.primerxmlmvvm.data.local.AppDatabase
 import com.example.primerxmlmvvm.data.local.CocheDao
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -25,15 +23,15 @@ object DatabaseModule {
             appContext,
             AppDatabase::class.java,
             "app.db"
-        ).fallbackToDestructiveMigration()
-            .createFromAsset("database/coches.db")
+        )   .createFromAsset("database/coches.db")
+            .fallbackToDestructiveMigration()
             .build()
     }
 
 
 
     @Provides
-    fun provideMovieDao(appDatabase: AppDatabase): CocheDao {
+    fun provideCocheDao(appDatabase: AppDatabase): CocheDao {
         return appDatabase.cocheDao()
     }
 }

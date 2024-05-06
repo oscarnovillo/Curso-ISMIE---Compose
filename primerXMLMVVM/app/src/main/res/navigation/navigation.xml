@@ -19,7 +19,9 @@
         tools:layout="@layout/fragment_listado_coches">
         <action
             android:id="@+id/action_listadoFragment_to_detalleFragment"
-            app:destination="@id/detalleFragment" />
+            app:destination="@id/detalleFragment"
+
+            />
 
 
     </fragment>
@@ -31,5 +33,8 @@
         <argument
             android:name="matricula"
             app:argType="string" />
+        <action
+            android:id="@+id/action_detalleFragment_to_listadoFragment"
+            app:popUpTo="@id/listadoFragment" />
     </fragment>
 </navigation>

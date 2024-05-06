@@ -17,6 +17,7 @@ interface CocheDao {
     @Delete
     fun delete(movie: CocheEntity)
 
+
     @Delete
     fun deleteAll(movie: List<CocheEntity>)
 
@@ -24,5 +25,5 @@ interface CocheDao {
 
     fun getAll(): List<CocheEntity>
     @Query("SELECT * FROM coches WHERE matricula = :matricula")
-    fun getCoche(matricula: String): CocheEntity
+    fun getCoche(matricula: String): CocheEntity?
 }
