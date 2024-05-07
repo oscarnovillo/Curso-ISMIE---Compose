@@ -1,16 +1,18 @@
 package com.example.primerxmlmvvm.ui.users.listado
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.example.primerxmlmvvm.R
-import com.example.primerxmlmvvm.databinding.CocheViewBinding
 import com.example.primerxmlmvvm.databinding.UserViewBinding
-import com.example.primerxmlmvvm.domain.modelo.Coche
 import com.example.primerxmlmvvm.domain.modelo.User
+
 
 class UsersAdapter (
 
@@ -46,6 +48,21 @@ class UsersAdapter (
                     textId.text = item.id.toString()
                     textNombre.text = item.name
                     textCompany.text = item.company
+                    //https://picsum.photos/150/150
+
+                    imageFoto.load("https://thispersondoesnotexist.com/"){
+                        crossfade(true)
+
+                        transformations(CircleCropTransformation())
+                    }
+                    val dimensionInDp = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        75F,
+                        itemView.resources.displayMetrics
+                    ).toInt()
+                    imageFoto.layoutParams.height = dimensionInDp
+                    imageFoto.layoutParams.width = dimensionInDp
+                    imageFoto.requestLayout()
                     itemView.setOnClickListener {
                         actions.onItemClick(item)
                     }

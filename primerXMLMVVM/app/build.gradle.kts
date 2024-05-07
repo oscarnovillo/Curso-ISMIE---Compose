@@ -96,7 +96,7 @@ dependencies {
     implementation (libs.converter.scalars)
     implementation (libs.logging.interceptor)
 
-
+    implementation(libs.coil)
 
 
     // Hilt
