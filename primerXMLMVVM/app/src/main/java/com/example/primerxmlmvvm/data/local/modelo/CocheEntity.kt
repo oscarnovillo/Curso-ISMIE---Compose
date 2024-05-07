@@ -1,4 +1,4 @@
-package com.example.primerxmlmvvm.data.modelo
+package com.example.primerxmlmvvm.data.local.modelo
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

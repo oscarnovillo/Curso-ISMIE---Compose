@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -19,8 +22,27 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        //load the values from .properties file
+        val keystoreFile = project.rootProject.file("apikey.properties")
+        val properties = Properties()
+        properties.load(keystoreFile.inputStream())
 
+        //return empty key in case something goes wrong
+        val apiKey = properties.getProperty("API_KEY") ?: ""
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions += "env"
+    productFlavors {
+        create("development") {
+            dimension = "env"
+            buildConfigField("String", "API_URL", "\"https://jsonplaceholder.typicode.com\"")
+        }
+        create("production") {
+            dimension = "env"
+            buildConfigField("String", "API_URL", "\"https://jsonplaceholder.typicode.com\"")
+        }
     }
 
     buildTypes {
@@ -54,17 +76,28 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.material)
+
+    // Fragments
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.bundles.viewmodel)
 
     implementation(libs.timber)
 
-    // Fragments
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+    //retrofit
+
+    //Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.converter.scalars)
+    implementation (libs.logging.interceptor)
+
+
+
 
     // Hilt
     implementation(libs.hilt.core)

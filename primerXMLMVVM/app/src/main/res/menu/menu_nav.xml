@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/listadoFragment"
-        android:icon="@drawable/baseline_article_24"
-        android:title="listado"
+        android:id="@+id/listadoCochesFragment"
+        android:icon="@drawable/car_convertible"
+        android:title="coches"
         android:contentDescription="listado"
         app:showAsAction="always"
          />
@@ -18,4 +18,13 @@
 
         app:showAsAction="always"
          />
+
+
+    <item
+        android:id="@+id/listadoUsersFragment"
+        android:icon="@drawable/baseline_boy_24"
+        android:title="users"
+        android:contentDescription="listado"
+        app:showAsAction="always"
+        />
 </menu>

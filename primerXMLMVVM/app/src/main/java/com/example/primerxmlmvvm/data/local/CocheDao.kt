@@ -1,7 +1,7 @@
 package com.example.primerxmlmvvm.data.local
 
 import androidx.room.*
-import com.example.primerxmlmvvm.data.modelo.CocheEntity
+import com.example.primerxmlmvvm.data.local.modelo.CocheEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

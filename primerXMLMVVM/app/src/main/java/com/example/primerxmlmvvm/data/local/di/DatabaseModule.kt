@@ -1,4 +1,4 @@
-package com.example.primerxmlmvvm.data.di
+package com.example.primerxmlmvvm.data.local.di
 
 import android.content.Context
 import androidx.room.Room

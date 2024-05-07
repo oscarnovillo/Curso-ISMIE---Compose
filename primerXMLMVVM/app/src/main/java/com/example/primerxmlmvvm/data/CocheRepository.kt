@@ -1,8 +1,8 @@
 package com.example.primerxmlmvvm.data
 
 import com.example.primerxmlmvvm.data.local.CocheDao
-import com.example.primerxmlmvvm.data.modelo.toCoche
-import com.example.primerxmlmvvm.data.modelo.toCocheEntity
+import com.example.primerxmlmvvm.data.local.modelo.toCoche
+import com.example.primerxmlmvvm.data.local.modelo.toCocheEntity
 import com.example.primerxmlmvvm.di.IoDispatcher
 import com.example.primerxmlmvvm.domain.modelo.Coche
 import kotlinx.coroutines.CoroutineDispatcher

@@ -13,7 +13,7 @@
 
     </fragment>
     <fragment
-        android:id="@+id/listadoFragment"
+        android:id="@+id/listadoCochesFragment"
         android:name="com.example.primerxmlmvvm.ui.coches.listado.ListadoFragment"
         android:label="fragment_listado"
         tools:layout="@layout/fragment_listado_coches">
@@ -35,6 +35,11 @@
             app:argType="string" />
         <action
             android:id="@+id/action_detalleFragment_to_listadoFragment"
-            app:popUpTo="@id/listadoFragment" />
+            app:popUpTo="@id/listadoCochesFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/listadoUsersFragment"
+        android:name="com.example.primerxmlmvvm.ui.users.listado.ListadoFragment"
+        android:label="fragment_listado_users"
+        tools:layout="@layout/fragment_listado_users" />
 </navigation>
