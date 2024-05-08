@@ -11,5 +11,6 @@ data class User(
     val name: String,
     val phone: String,
     val username: String,
-    val website: String
+    val website: String,
+    var fotoUrl: String = "https://thispersondoesnotexist.com/",
 )

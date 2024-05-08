@@ -23,13 +23,13 @@ android {
         versionCode = 1
         versionName = "1.0"
         //load the values from .properties file
-        val keystoreFile = project.rootProject.file("apikey.properties")
-        val properties = Properties()
-        properties.load(keystoreFile.inputStream())
-
-        //return empty key in case something goes wrong
-        val apiKey = properties.getProperty("API_KEY") ?: ""
-        buildConfigField("String", "API_KEY", "\"$apiKey\"")
+//        val keystoreFile = project.rootProject.file("apikey.properties")
+//        val properties = Properties()
+//        properties.load(keystoreFile.inputStream())
+//
+//        //return empty key in case something goes wrong
+//        val apiKey = properties.getProperty("API_KEY") ?: ""
+//        buildConfigField("String", "API_KEY", "\"$apiKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

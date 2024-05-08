@@ -56,6 +56,7 @@ class ListadoFragment : Fragment() {
 
             usersAdapter = UsersAdapter(actions = object : UsersAdapter.UsersActions {
                 override fun onItemClick(user: User) {
+                    viewModel.handleEvent(ListadoEvent.getUser(user.id))
 //                    val action = ListadoFragmentDirections.actionListadoFragmentToDetalleFragment(coche.matricula)
 //                    findNavController().navigate(action)
                 }

@@ -33,7 +33,25 @@ class UsersRepository @Inject constructor(
 
     }
 
-    private fun error(errorMessage: String): NetworkResult<List<User>> =
+    suspend fun fetchUser(id: Int): NetworkResult<User> {
+
+        try {
+            val response = userService.getUser(id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    return NetworkResult.Success(body.toUser())
+                }
+            }
+            return error("${response.code()} ${response.message()}")
+        } catch (e: Exception) {
+            return error(e.message ?: e.toString())
+        }
+
+    }
+
+
+    private fun <T> error(errorMessage: String): NetworkResult<T> =
         NetworkResult.Error("Api call failed $errorMessage")
 
 }
