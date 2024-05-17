@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 interface CocheDao {
 
 
-    @Query("SELECT * FROM coches")
+    @Query("SELECT * FROM coches where matricula like :filtro order by matricula")
+    fun getAllFlowFiltrado(filtro: String?): Flow<List<CocheEntity>>
+
+    @Query("SELECT * FROM coches order by matricula")
     fun getAllFlow(): Flow<List<CocheEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,9 +24,11 @@ interface CocheDao {
     @Delete
     fun deleteAll(movie: List<CocheEntity>)
 
-    @Query("SELECT * FROM coches")
+    @Query("SELECT * FROM coches order by matricula")
 
     fun getAll(): List<CocheEntity>
     @Query("SELECT * FROM coches WHERE matricula = :matricula")
     fun getCoche(matricula: String): CocheEntity?
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    fun insert(toCocheEntity: CocheEntity)
 }

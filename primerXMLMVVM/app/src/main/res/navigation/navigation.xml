@@ -8,14 +8,14 @@
     <fragment
         android:id="@+id/sumarFragment"
         android:name="com.example.primerxmlmvvm.ui.suma.SumaFragment"
-        android:label="SumaFragment"
+        android:label="Sumar"
         tools:layout="@layout/fragment_suma">
 
     </fragment>
     <fragment
         android:id="@+id/listadoCochesFragment"
         android:name="com.example.primerxmlmvvm.ui.coches.listado.ListadoFragment"
-        android:label="fragment_listado"
+        android:label="Coches"
         tools:layout="@layout/fragment_listado_coches">
         <action
             android:id="@+id/action_listadoFragment_to_detalleFragment"
@@ -28,7 +28,7 @@
     <fragment
         android:id="@+id/detalleFragment"
         android:name="com.example.primerxmlmvvm.ui.coches.detalle.DetalleFragment"
-        android:label="DetalleFragment"
+        android:label="Detalle Coche"
         tools:layout="@layout/fragment_detalle_coches">
         <argument
             android:name="matricula"
@@ -40,6 +40,6 @@
     <fragment
         android:id="@+id/listadoUsersFragment"
         android:name="com.example.primerxmlmvvm.ui.users.listado.ListadoFragment"
-        android:label="fragment_listado_users"
+        android:label="Usuarios"
         tools:layout="@layout/fragment_listado_users" />
 </navigation>

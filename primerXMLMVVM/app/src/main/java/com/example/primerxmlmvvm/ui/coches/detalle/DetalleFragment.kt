@@ -45,6 +45,8 @@ class DetalleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args : DetalleFragmentArgs by navArgs()
+
+
         viewModel.handleEvent(DetalleEvent.GetCoche(args.matricula))
 
 

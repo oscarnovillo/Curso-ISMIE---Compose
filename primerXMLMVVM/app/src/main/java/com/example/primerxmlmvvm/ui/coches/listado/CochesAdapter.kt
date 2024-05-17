@@ -2,56 +2,49 @@ package com.example.primerxmlmvvm.ui.coches.listado
 
 
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.primerxmlmvvm.R
 import com.example.primerxmlmvvm.databinding.CocheViewBinding
 
 import com.example.primerxmlmvvm.domain.modelo.Coche
+import com.example.primerxmlmvvm.ui.users.listado.UsersAdapter
 
 class CochesAdapter(
+    val context : Context,
     val actions: CochesActions,
 
-) : ListAdapter<Coche, CochesAdapter.ItemViewholder>(DiffCallback()) {
+    ) : ListAdapter<Coche, CocheItemViewholder>(DiffCallback()) {
 
 
     interface CochesActions {
         fun onItemClick(coche: Coche)
+        abstract fun onDelete(coche: Coche)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewholder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocheItemViewholder {
 
-        return ItemViewholder(
+        return CocheItemViewholder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.coche_view, parent, false)
+                .inflate(R.layout.coche_view, parent, false),
+            actions,
+
         )
     }
 
-    override fun onBindViewHolder(holder: ItemViewholder, position: Int) = with(holder) {
+    override fun onBindViewHolder(holder: CocheItemViewholder, position: Int) = with(holder) {
         val item = getItem(position)
         bind(item)
     }
 
 
-    inner class ItemViewholder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val binding = CocheViewBinding.bind(itemView)
-
-        fun bind(item: Coche) {
-            with(binding) {
-                textMatricula.text = item.matricula
-                textModelo.text = item.modelo
-                textMarca.text = item.marca
-                itemView.setOnClickListener {
-                    actions.onItemClick(item)
-                }
-            }
-        }
-    }
 
 
     class DiffCallback : DiffUtil.ItemCallback<Coche>() {
@@ -61,6 +54,24 @@ class CochesAdapter(
 
         override fun areContentsTheSame(oldItem: Coche, newItem: Coche): Boolean {
             return oldItem == newItem
+        }
+    }
+
+
+    val swipeGesture = object : SwipeGesture(context) {
+
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            //if (!selectedMode) {
+            when (direction) {
+                ItemTouchHelper.LEFT -> {
+                    //selectedPersonas.remove(currentList[viewHolder.adapterPosition])
+                    actions.onDelete(currentList[viewHolder.absoluteAdapterPosition])
+//                    if (selectedMode)
+//                        actions.itemHasClicked(currentList[viewHolder.adapterPosition])
+                }
+            }
+            //}
         }
     }
 }

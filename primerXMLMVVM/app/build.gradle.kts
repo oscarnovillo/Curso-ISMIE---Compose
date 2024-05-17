@@ -79,12 +79,17 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
+    // para el decortator al hacer swipe
+    implementation(libs.recyclerview.swipedecorator)
+
 
     // Fragments
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.bundles.viewmodel)
+
+
 
     implementation(libs.timber)
 

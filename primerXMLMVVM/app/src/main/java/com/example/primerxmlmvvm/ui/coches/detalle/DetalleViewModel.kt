@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,21 +23,20 @@ class DetalleViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val _uiState: MutableStateFlow<DetalleState> by lazy {
-        MutableStateFlow(DetalleState())
-    }
+    private val _uiState: MutableStateFlow<DetalleState> = MutableStateFlow(DetalleState())
+
     val uiState: StateFlow<DetalleState> = _uiState.asStateFlow()
 
 
     fun handleEvent(event: DetalleEvent) {
         when (event) {
             DetalleEvent.MensajeMostrado -> {
-                _uiState.value = _uiState.value.copy(error = null)
+                _uiState.update{ it.copy(error = null)}
             }
 
             is DetalleEvent.GetCoche ->
                 viewModelScope.launch(dispatcher) {
-                    _uiState.value = _uiState.value.copy(coche = getCoche.invoke(event.matricula))
+                    _uiState.update{ it.copy(coche = getCoche.invoke(event.matricula))}
                 }
 
             DetalleEvent.DelCoche -> {

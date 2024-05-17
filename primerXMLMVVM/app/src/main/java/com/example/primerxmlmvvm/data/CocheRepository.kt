@@ -14,18 +14,25 @@ class CocheRepository @Inject constructor(
     private val cocheDao: CocheDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) {
-    fun getCochesFlow(): Flow<List<Coche>> {
-        return cocheDao.getAllFlow().map { listaCoches ->
-            listaCoches.map { it.toCoche() }
+    fun getCochesFlow(filtro :String?): Flow<List<Coche>> {
+        filtro?.let{
+            return cocheDao.getAllFlowFiltrado("%$filtro%").map { listaCoches ->
+            listaCoches.map { it.toCoche() }}
         }
+        return cocheDao.getAllFlow().map { listaCoches ->
+            listaCoches.map { it.toCoche() }}
     }
 
-    fun getCoches(): List<Coche> {
-        return cocheDao.getAll().map { it.toCoche() }
-    }
+    fun getCoches(): List<Coche> =
+        cocheDao.getAll().map { it.toCoche() }
+
 
     fun insertAll(coches: List<Coche>) {
         cocheDao.insertAll(coches.map { it.toCocheEntity() } )
+    }
+
+    fun insert(coche: Coche) {
+        cocheDao.insert(coche.toCocheEntity()  )
     }
 
     fun getCoche(matricula: String): Coche? {
