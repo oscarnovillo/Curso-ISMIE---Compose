@@ -8,5 +8,5 @@ data class ListadoState(
     val isLoading: Boolean = false,
     val cochesSeleccionados: List<Coche> = emptyList(),
     val selectMode: Boolean = false,
-    val event: UiEvent? = null
+    val event: UiEvent? = null,
 )

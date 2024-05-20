@@ -8,7 +8,6 @@ interface ListadoContract {
     sealed class ListadoEvent {
         object getUsers : ListadoEvent()
 
-        class getUser(val id: Int) : ListadoEvent()
         object ErrorMostrado: ListadoEvent()
     }
 

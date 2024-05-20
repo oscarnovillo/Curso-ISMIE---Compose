@@ -41,5 +41,21 @@
         android:id="@+id/listadoUsersFragment"
         android:name="com.example.primerxmlmvvm.ui.users.listado.ListadoFragment"
         android:label="Usuarios"
-        tools:layout="@layout/fragment_listado_users" />
+        tools:layout="@layout/fragment_listado_users" >
+        <action
+            android:id="@+id/action_listadoUsersFragment_to_detalleUsersFragment"
+            app:destination="@id/detalleUsersFragment"
+
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/detalleUsersFragment"
+        android:name="com.example.primerxmlmvvm.ui.users.detalle.DetalleUsersFragment"
+        android:label="Detalle Usuario"
+        tools:layout="@layout/fragment_detalle_users">
+        <argument
+            android:name="id"
+            app:argType="long" />
+
+    </fragment>
 </navigation>

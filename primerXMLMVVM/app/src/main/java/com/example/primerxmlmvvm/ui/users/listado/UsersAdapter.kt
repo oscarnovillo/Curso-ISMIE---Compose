@@ -48,9 +48,8 @@ class UsersAdapter (
                     textId.text = item.id.toString()
                     textNombre.text = item.name
                     textCompany.text = item.company
-                    //https://picsum.photos/150/150
 
-                    imageFoto.load("https://thispersondoesnotexist.com/"){
+                    imageFoto.load(item.fotoUrl){
                         crossfade(true)
 
                         transformations(CircleCropTransformation())

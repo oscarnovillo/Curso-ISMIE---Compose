@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,7 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ListadoViewModel @Inject constructor(
     val getUsers: GetUsers,
-    val getUser: GetUser,
     @IoDispatcher val dispatcher: CoroutineDispatcher
 
 ) : ViewModel() {
@@ -38,27 +38,25 @@ class ListadoViewModel @Inject constructor(
 
             ListadoEvent.getUsers ->
                 viewModelScope.launch(dispatcher) {
-                    getUsers.invoke().let {
-                        when (it) {
-                            is NetworkResult.Error -> _uiState.value =
-                                _uiState.value.copy(error = it.message, isLoading = false)
+                    _uiState.update{
+                        it.copy(isLoading = true)}
 
-                            is NetworkResult.Loading -> _uiState.value =
-                                _uiState.value.copy(isLoading = true)
+                    getUsers.invoke().let {result ->
+                        when (result) {
+                            is NetworkResult.Error -> _uiState.update {
+                                it.copy(error = result.message, isLoading = false) }
 
-                            is NetworkResult.Success -> _uiState.value =
-                                _uiState.value.copy(users = it.data ?: emptyList(), isLoading = false)
+                            is NetworkResult.Loading -> _uiState.update{
+                                it.copy(isLoading = true)}
+
+                            is NetworkResult.Success -> _uiState.update {
+                                it.copy(users = result.data ?: emptyList(), isLoading = false)}
                         }
 
                     }
                 }
 
-            is ListadoEvent.getUser -> viewModelScope.launch(dispatcher) {
-                val user = getUser.invoke(event.id).data
-                    Timber.d(user?.name)
 
-
-            }
         }
     }
 

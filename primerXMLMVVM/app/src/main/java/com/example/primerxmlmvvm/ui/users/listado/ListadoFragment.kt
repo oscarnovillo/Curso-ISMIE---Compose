@@ -9,9 +9,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.primerxmlmvvm.databinding.FragmentListadoCochesBinding
+import com.example.primerxmlmvvm.databinding.FragmentListadoUsersBinding
 import com.example.primerxmlmvvm.domain.modelo.Coche
 import com.example.primerxmlmvvm.domain.modelo.User
 import com.example.primerxmlmvvm.ui.users.listado.ListadoContract.*
@@ -25,7 +27,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ListadoFragment : Fragment() {
 
-    private var _binding: FragmentListadoCochesBinding? = null
+    private var _binding: FragmentListadoUsersBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ListadoViewModel by viewModels()
 
@@ -36,7 +38,7 @@ class ListadoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentListadoCochesBinding.inflate(inflater, container, false)
+        _binding = FragmentListadoUsersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -56,9 +58,11 @@ class ListadoFragment : Fragment() {
 
             usersAdapter = UsersAdapter(actions = object : UsersAdapter.UsersActions {
                 override fun onItemClick(user: User) {
-                    viewModel.handleEvent(ListadoEvent.getUser(user.id))
-//                    val action = ListadoFragmentDirections.actionListadoFragmentToDetalleFragment(coche.matricula)
-//                    findNavController().navigate(action)
+
+                    val action = ListadoFragmentDirections.actionListadoUsersFragmentToDetalleUsersFragment(
+                        user.id.toLong()
+                    )
+                    findNavController().navigate(action)
                 }
             })
             listado.adapter = usersAdapter
@@ -68,9 +72,9 @@ class ListadoFragment : Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.uiState.collect { mainState ->
+                        binding.progressBar.visibility = if (mainState.isLoading) View.VISIBLE else View.GONE
                         usersAdapter.submitList(mainState.users)
                         mainState.error?.let {
-                            Timber.d("error mostrado")
                             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
                             viewModel.handleEvent(ListadoEvent.ErrorMostrado)
                         }
