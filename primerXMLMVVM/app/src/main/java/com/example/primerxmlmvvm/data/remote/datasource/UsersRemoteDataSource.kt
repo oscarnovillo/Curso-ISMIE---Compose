@@ -12,11 +12,16 @@ class UsersRemoteDataSource @Inject constructor(
     private val userService: UserService,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : BaseApiResponse() {
-    suspend fun fetchUsers(): NetworkResult<List<User>?> {
-
-        return safeApiCall { userService.getUsers() }.map { lista ->
-            lista?.map { it.toUser() } }
+    suspend fun fetchUsers(): NetworkResult<List<User>?> =
+        safeApiCall { userService.getUsers() }.map { lista ->
+            lista?.map { it.toUser() }
         }
 
-    }
+    suspend fun delUser(id : Int): NetworkResult<Boolean> =
+        safeApiCallNoBody { userService.delUser(id) }
+
+
+
+
+}
 

@@ -27,6 +27,7 @@ class UsersRepository @Inject constructor(
             emit(NetworkResult.Loading())
             val result = usersRemoteDataSource.fetchUsers()
             emit(result)
+
         }
             .catch { e ->
                 emit(NetworkResult.Error(e.message ?: "Error"))
@@ -70,6 +71,22 @@ class UsersRepository @Inject constructor(
             return error(e.message ?: e.toString())
         }
 
+    }
+
+
+    suspend fun delUserConFlow(id: Int): Flow<NetworkResult<Boolean>> {
+
+        return flow {
+
+            emit(NetworkResult.Loading())
+            val result = usersRemoteDataSource.delUser(id)
+            emit(result)
+
+        }
+            .catch { e ->
+                emit(NetworkResult.Error(e.message ?: "Error"))
+            }
+            .flowOn(dispatcher)
     }
 
 

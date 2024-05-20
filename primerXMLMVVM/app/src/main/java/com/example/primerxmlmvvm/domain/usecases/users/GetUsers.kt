@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 class GetUsers @Inject constructor(val userRepository: UsersRepository) {
 
-    suspend operator fun invoke() = userRepository.fetchUsers()
+    suspend operator fun invoke() = userRepository.fetchUsersConFlow()
 }

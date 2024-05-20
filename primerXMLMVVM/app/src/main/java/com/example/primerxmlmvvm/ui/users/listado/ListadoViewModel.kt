@@ -38,10 +38,7 @@ class ListadoViewModel @Inject constructor(
 
             ListadoEvent.getUsers ->
                 viewModelScope.launch(dispatcher) {
-                    _uiState.update{
-                        it.copy(isLoading = true)}
-
-                    getUsers.invoke().let {result ->
+                    getUsers.invoke().collect{ result ->
                         when (result) {
                             is NetworkResult.Error -> _uiState.update {
                                 it.copy(error = result.message, isLoading = false) }

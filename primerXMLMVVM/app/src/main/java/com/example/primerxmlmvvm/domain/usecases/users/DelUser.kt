@@ -5,5 +5,5 @@ import javax.inject.Inject
 
 class DelUser  @Inject constructor(val userRepository: UsersRepository) {
 
-    suspend operator fun invoke(id : Int) = userRepository.delUser(id)
+    suspend operator fun invoke(id : Int) = userRepository.delUserConFlow(id)
 }

@@ -54,15 +54,15 @@ class DetalleUsersViewModel @Inject constructor(
             }
 
             is DetalleUsersEvent.DelUser -> viewModelScope.launch(dispatcher) {
-                delUser.invoke(event.id).apply {
-                    when (this) {
+                delUser.invoke(event.id).collect {result ->
+                    when (result) {
                         is NetworkResult.Success -> {
                             _uiState.update {
                                 it.copy(event = UiEvent.PopBackStack, isLoading = false)
                             }
                         }
 
-                        is NetworkResult.Error -> tratarError(this.message)
+                        is NetworkResult.Error -> tratarError(result.message)
 
                         is NetworkResult.Loading -> _uiState.update { it.copy(isLoading = true) }
                     }
