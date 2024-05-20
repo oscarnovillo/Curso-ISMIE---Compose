@@ -3,9 +3,13 @@ package com.example.primerxmlmvvm.ui.suma
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
@@ -35,6 +39,11 @@ class SumaFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: SumaViewModel by viewModels()
 
+
+    private val callback by lazy {
+        configContextBar()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,6 +68,8 @@ class SumaFragment : Fragment() {
                 viewModel.handleEvent(SumaEvent.Sumar(1))
             }
             buttonRestar.setOnClickListener{
+
+                (requireActivity() as AppCompatActivity).startSupportActionMode(callback)
                 viewModel.handleEvent(SumaEvent.Restar(1))
             }
 
@@ -93,5 +104,35 @@ class SumaFragment : Fragment() {
         }
 
     }
+
+    private fun configContextBar() =
+        object : ActionMode.Callback {
+
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                requireActivity().menuInflater.inflate(R.menu.context_bar, menu)
+                return true
+            }
+
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                return false
+            }
+
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                return when (item?.itemId) {
+                    R.id.borrar -> {
+                        //viewModel.handleEvent(MainEvent.DeletePersonasSeleccionadas())
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode?) {
+                //viewModel.handleEvent(MainEvent.ResetSelectMode)
+
+            }
+
+        }
+
 
 }

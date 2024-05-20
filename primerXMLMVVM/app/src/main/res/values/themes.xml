@@ -1,6 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.PrimerXMLMVVM" parent="Theme.Material3.DayNight.NoActionBar">
+            <!-- este estilo es para la barra del action mode-->
+            <item name="windowActionModeOverlay">true</item>
+
+            <item name="actionModeStyle">@style/Widget.AppCompat.ActionMode</item>
+            <item name="actionModeCloseDrawable">@drawable/ic_close_24dp</item>
+            <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
+
             <item name="android:navigationBarColor">
                     @android:color/transparent
             </item>
@@ -56,6 +63,7 @@
                 <item name="android:color">@color/md_theme_inversePrimary</item>
         </style>
     <style name="Theme.PrimerXMLMVVM" parent="Base.Theme.PrimerXMLMVVM" />
+
     <!-- style for the text -->
     <style name="texto">
         <item name="android:textSize">20sp</item>

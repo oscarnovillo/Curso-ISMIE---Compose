@@ -7,6 +7,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -34,8 +36,9 @@ import timber.log.Timber
  * Use the [ListadoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+// MenuProvider para cambiar la Top appbar
 @AndroidEntryPoint
-class ListadoFragment : Fragment(){
+class ListadoFragment : Fragment(), MenuProvider {
 
     // el binding en Fragments con estas dos lineas.
     private var _binding: FragmentListadoCochesBinding? = null
@@ -45,6 +48,13 @@ class ListadoFragment : Fragment(){
     private val viewModel: ListadoViewModel by viewModels()
 
     private lateinit var cocheAdapter: CochesAdapter
+
+
+    private val callback by lazy {
+        configContextBar()
+    }
+
+    private var actionMode: ActionMode? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,12 +69,23 @@ class ListadoFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         configRecyclerView()
-        //configAppBar()
+        configAppBar()
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { mainState ->
                     cocheAdapter.submitList(mainState.coches)
+
+                    if (mainState.selectMode) {
+                        cocheAdapter.startSelectMode()
+                        actionMode?.title = "${mainState.cochesSeleccionados.size} seleccionados"
+
+                    } else {
+                        cocheAdapter.resetSelectMode()
+                        actionMode?.finish()
+                    }
+                    cocheAdapter.setSelectedItems(mainState.cochesSeleccionados)
+
 
 
                     mainState.event?.let { uiEvent ->
@@ -100,14 +121,14 @@ class ListadoFragment : Fragment(){
 
     }
 
-//    private fun configAppBar() {
-//
-//        val menuHost: MenuHost = requireActivity()
-//
-//        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-//
-//
-//    }
+    private fun configAppBar() {
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+
+    }
 
 
     private fun configRecyclerView() {
@@ -135,6 +156,15 @@ class ListadoFragment : Fragment(){
                     override fun onDelete(coche: Coche) {
                         this@ListadoFragment.onDelete(coche)
                     }
+
+                    override fun onSelectCoche(coche: Coche) {
+                        viewModel.handleEvent(ListadoEvent.SelectCoche(coche))
+                    }
+
+                    override fun onStartSelectMode(coche: Coche) {
+                        startSelectMode()
+                        viewModel.handleEvent(ListadoEvent.StartSelectMode(coche))
+                    }
                 })
             listado.adapter = cocheAdapter
 
@@ -145,41 +175,77 @@ class ListadoFragment : Fragment(){
         }
     }
 
+
+    private fun startSelectMode() {
+        (requireActivity() as AppCompatActivity).startSupportActionMode(callback)?.let {
+            actionMode = it;
+        }
+    }
+
+    private fun configContextBar() =
+        object : ActionMode.Callback {
+
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                requireActivity().menuInflater.inflate(R.menu.context_bar, menu)
+                return true
+            }
+
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                return false
+            }
+
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                return when (item?.itemId) {
+                    R.id.borrar -> {
+                        viewModel.handleEvent(ListadoEvent.DeleteCocheSeleccionados)
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode?) {
+                viewModel.handleEvent(ListadoEvent.EndSelectMode)
+
+            }
+
+        }
+
     private fun onDelete(coche: Coche) {
         viewModel.handleEvent(ListadoEvent.DeleteCoche(coche))
     }
 
-//    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-//
-//        // añade opciones al top bar
-//        menuInflater.inflate(R.menu.menu_appbar_search, menu)
-//
-//
-//
-//        // controla la busqueda en el top bar
-//        val actionSearch = menu.findItem(R.id.search).actionView as SearchView
-//
-//        actionSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(p0: String?): Boolean {
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-//
-//                newText?.let {
-//                    Timber.d("Search $newText")
-//                    viewModel.handleEvent(ListadoEvent.changeFiltro(newText))
-//                }
-//
-//                return false
-//            }
-//
-//
-//        })
-//    }
-//
-//    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//       return true
-//    }
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+
+        // añade opciones al top bar
+        menuInflater.inflate(R.menu.menu_appbar_search, menu)
+
+
+        // controla la busqueda en el top bar
+        val actionSearch = menu.findItem(R.id.search).actionView as SearchView
+
+        actionSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                newText?.let {
+                    Timber.d("Search $newText")
+                    viewModel.handleEvent(ListadoEvent.ChangeFiltro(newText))
+                }
+
+                return false
+            }
+
+
+        })
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return true
+    }
 
 }

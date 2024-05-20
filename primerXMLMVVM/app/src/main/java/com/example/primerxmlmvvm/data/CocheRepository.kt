@@ -40,8 +40,8 @@ class CocheRepository @Inject constructor(
 
     }
 
-    fun delCoche(coche: Coche): Any {
-        return cocheDao.delete(coche.toCocheEntity())
+    fun delCoches(coche: List<Coche>): Any {
+        return cocheDao.deleteAll(coche.map { it.toCocheEntity()})
     }
 }
 

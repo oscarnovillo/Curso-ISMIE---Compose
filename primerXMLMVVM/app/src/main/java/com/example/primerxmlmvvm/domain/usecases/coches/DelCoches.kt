@@ -4,7 +4,7 @@ import com.example.primerxmlmvvm.data.CocheRepository
 import com.example.primerxmlmvvm.domain.modelo.Coche
 import javax.inject.Inject
 
-class DelCoche @Inject constructor(val cocheRepository: CocheRepository){
+class DelCoches @Inject constructor(val cocheRepository: CocheRepository){
 
-    operator fun invoke(coche: Coche) = cocheRepository.delCoches(listOf(coche))
+    operator fun invoke(coches: List<Coche>) = cocheRepository.delCoches(coches)
 }

@@ -23,9 +23,36 @@ class CochesAdapter(
     ) : ListAdapter<Coche, CocheItemViewholder>(DiffCallback()) {
 
 
+    // para el action mode
+    private var selectedPersonas = mutableSetOf<Coche>()
+
+    fun startSelectMode() {
+        selectedMode = true
+        notifyDataSetChanged()
+    }
+
+
+    fun resetSelectMode() {
+        selectedMode = false
+        selectedPersonas.clear()
+        notifyDataSetChanged()
+    }
+
+    fun setSelectedItems(personasSeleccionadas: List<Coche>){
+        selectedPersonas.clear()
+        selectedPersonas.addAll(personasSeleccionadas)
+    }
+
+    private var selectedMode: Boolean = false
+
+
+
     interface CochesActions {
         fun onItemClick(coche: Coche)
-        abstract fun onDelete(coche: Coche)
+        fun onDelete(coche: Coche)
+        fun onSelectCoche(coche: Coche)
+
+        fun onStartSelectMode(coche: Coche)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocheItemViewholder {
@@ -40,7 +67,7 @@ class CochesAdapter(
 
     override fun onBindViewHolder(holder: CocheItemViewholder, position: Int) = with(holder) {
         val item = getItem(position)
-        bind(item)
+        bind(item,selectedMode,selectedPersonas)
     }
 
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.primerxmlmvvm.di.IoDispatcher
 import com.example.primerxmlmvvm.domain.modelo.Coche
 import com.example.primerxmlmvvm.domain.usecases.coches.DelCoche
+import com.example.primerxmlmvvm.domain.usecases.coches.DelCoches
 import com.example.primerxmlmvvm.domain.usecases.coches.GetCochesFlow
 import com.example.primerxmlmvvm.domain.usecases.coches.InsertCoche
 import com.example.primerxmlmvvm.ui.common.UiEvent
@@ -15,22 +16,25 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMap
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+data class SelectMode(
+    val selectMode: Boolean = false,
+    val cochesSeleccionados: List<Coche> = mutableListOf(),
+
+)
 
 
 @HiltViewModel
 class ListadoViewModel @Inject constructor(
     getCochesFlow: GetCochesFlow,
     val delCoche: DelCoche,
+    val delCoches: DelCoches,
     val insertCoche: InsertCoche,
     @IoDispatcher val dispatcher: CoroutineDispatcher
 
@@ -39,11 +43,23 @@ class ListadoViewModel @Inject constructor(
     private var cocheBorrado: Coche? = null
     private val _uiEvent = MutableStateFlow<UiEvent?>(null)
     private val _filtro = MutableStateFlow<String?>(null)
+    private val _selectMode = MutableStateFlow(SelectMode())
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<ListadoState> =
-        combine( getCochesFlow(_filtro.value), _uiEvent) { coches, error ->
-            ListadoState(coches, false, error)
+        combine(
+            _filtro.flatMapLatest { getCochesFlow(_filtro.value) },
+            _uiEvent,
+            _selectMode,
+        ) { coches, uiEvent, selectMode ->
+            ListadoState(
+                coches = coches,
+                isLoading = false,
+                selectMode = selectMode.selectMode,
+                cochesSeleccionados = selectMode.cochesSeleccionados,
+                event = uiEvent
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -69,7 +85,43 @@ class ListadoViewModel @Inject constructor(
                 }
             }
 
-            is ListadoEvent.changeFiltro -> _filtro.update{ event.filtro }
+            is ListadoEvent.ChangeFiltro -> _filtro.update { event.filtro }
+            ListadoEvent.EndSelectMode -> _selectMode.update { it.copy(selectMode = false, cochesSeleccionados = mutableListOf()) }
+            is ListadoEvent.SelectCoche -> {
+
+                if (_selectMode.value.cochesSeleccionados.contains(event.coche)) {
+                    _selectMode.update {
+                        it.copy(
+                            cochesSeleccionados = it.cochesSeleccionados - event.coche
+                        )
+                    }
+                } else _selectMode.update {
+                    it.copy(
+                        cochesSeleccionados = it.cochesSeleccionados + event.coche,
+
+                        )
+                }
+
+            }
+
+            is ListadoEvent.StartSelectMode -> _selectMode.update {
+                it.copy(
+                    selectMode = true, cochesSeleccionados = mutableListOf(event.coche)
+                )
+            }
+
+            ListadoEvent.DeleteCocheSeleccionados -> {
+                viewModelScope.launch(dispatcher) {
+                    delCoches(_selectMode.value.cochesSeleccionados)
+                    _selectMode.update {
+                        it.copy(
+                            selectMode = false,
+                            cochesSeleccionados = mutableListOf())
+                    }
+                    _uiEvent.update { UiEvent.ShowSnackbar("Coches eliminados") }
+                }
+            }
+
         }
 
     }

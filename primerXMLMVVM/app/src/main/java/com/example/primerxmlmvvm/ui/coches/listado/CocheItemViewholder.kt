@@ -9,13 +9,31 @@ class CocheItemViewholder (itemView: View, val actions: CochesAdapter.CochesActi
 
         private val binding = CocheViewBinding.bind(itemView)
 
-        fun bind(item: Coche) {
+        fun bind(item: Coche,selectedMode: Boolean, selectedCoches: MutableSet<Coche>){
             with(binding) {
                 textMatricula.text = item.matricula
                 textModelo.text = item.modelo
                 textMarca.text = item.marca
+                itemView.setBackgroundResource(android.R.color.white)
+
+                if (selectedMode && selectedCoches.contains(item))
+                    itemView.setBackgroundResource(android.R.color.holo_blue_light)
+
+
+                itemView.setOnLongClickListener{
+                    if (!selectedMode)
+                        actions.onStartSelectMode(item)
+                    else
+                        actions.onSelectCoche(item)
+                    true
+                }
                 itemView.setOnClickListener {
-                    actions.onItemClick(item)
+                    if (!selectedMode)
+                        actions.onItemClick(item)
+                    else{
+                        actions.onSelectCoche(item)
+
+                    }
                 }
             }
         }
