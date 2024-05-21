@@ -40,9 +40,6 @@ class SumaFragment : Fragment() {
     private val viewModel: SumaViewModel by viewModels()
 
 
-    private val callback by lazy {
-        configContextBar()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +66,7 @@ class SumaFragment : Fragment() {
             }
             buttonRestar.setOnClickListener{
 
-                (requireActivity() as AppCompatActivity).startSupportActionMode(callback)
+
                 viewModel.handleEvent(SumaEvent.Restar(1))
             }
 
@@ -105,34 +102,6 @@ class SumaFragment : Fragment() {
 
     }
 
-    private fun configContextBar() =
-        object : ActionMode.Callback {
-
-            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                requireActivity().menuInflater.inflate(R.menu.context_bar, menu)
-                return true
-            }
-
-            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                return false
-            }
-
-            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-                return when (item?.itemId) {
-                    R.id.borrar -> {
-                        //viewModel.handleEvent(MainEvent.DeletePersonasSeleccionadas())
-                        true
-                    }
-                    else -> false
-                }
-            }
-
-            override fun onDestroyActionMode(mode: ActionMode?) {
-                //viewModel.handleEvent(MainEvent.ResetSelectMode)
-
-            }
-
-        }
 
 
 }

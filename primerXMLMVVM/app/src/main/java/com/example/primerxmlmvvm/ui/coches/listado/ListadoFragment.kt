@@ -49,6 +49,10 @@ class ListadoFragment : Fragment(), MenuProvider {
 
     private lateinit var cocheAdapter: CochesAdapter
 
+    private val touchHelper by lazy {
+        ItemTouchHelper(cocheAdapter.swipeGesture)
+    }
+
 
     private val callback by lazy {
         configContextBar()
@@ -77,10 +81,14 @@ class ListadoFragment : Fragment(), MenuProvider {
                     cocheAdapter.submitList(mainState.coches)
 
                     if (mainState.selectMode) {
+                        // quita el swipe cuando estas en multiseleccion
+                        touchHelper.attachToRecyclerView(null)
                         cocheAdapter.startSelectMode()
                         actionMode?.title = "${mainState.cochesSeleccionados.size} seleccionados"
 
                     } else {
+                        // pone el swipe cuando no estas en multiseleccion
+                        touchHelper.attachToRecyclerView(binding.listado)
                         cocheAdapter.resetSelectMode()
                         actionMode?.finish()
                     }
@@ -169,8 +177,10 @@ class ListadoFragment : Fragment(), MenuProvider {
             listado.adapter = cocheAdapter
 
             // configura los swipe gestures
-            val touchHelper = ItemTouchHelper(cocheAdapter.swipeGesture)
-            touchHelper.attachToRecyclerView(binding.listado)
+            // se hace en el collect del estado porque depende del selectmode
+//            val touchHelper = ItemTouchHelper(cocheAdapter.swipeGesture)
+//            touchHelper.attachToRecyclerView(binding.listado)
+
 
         }
     }

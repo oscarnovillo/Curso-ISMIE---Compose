@@ -24,6 +24,7 @@ class SumaViewModel @Inject constructor(
     val uiState: StateFlow<SumaState> get() = _uiState
 
 
+    // opcion para los one time event.
     private val _uiError = Channel<String>()
     val uiError = _uiError.receiveAsFlow()
 
@@ -32,7 +33,7 @@ class SumaViewModel @Inject constructor(
         when (event) {
 
             SumaEvent.ErrorMostrado ->{
-                _uiState.update{_uiState.value.copy(error = null)}
+                _uiState.update{it.copy(error = null)}
 
             }
 
@@ -44,7 +45,7 @@ class SumaViewModel @Inject constructor(
 
     private fun operacion( op:(Int,Int) -> Int,incremento: Int){
         if (Random.nextBoolean())
-            _uiState.update{_uiState.value.copy(contador = op(_uiState.value.contador,incremento))}
+            _uiState.update{it.copy(contador = op(_uiState.value.contador,incremento))}
         else{
             //_uiState.update{_uiState.value.copy(error = "Error aleatorio")}
             viewModelScope.launch {
