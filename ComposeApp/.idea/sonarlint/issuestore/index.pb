@@ -229,3 +229,7 @@ Q.idea/sonarlint/securityhotspotstore/5/6/56fcd34cdaf492a51bb7d4893494e3f4c65677
 Q.idea/sonarlint/securityhotspotstore/4/a/4a1c91d36107f5978129dae391ca570b43f5c2ee,0\1\01b123fe9c3f67f48de454fa26c1acf256d28d3d
 Å
 Q.idea/sonarlint/securityhotspotstore/4/8/4838901509575cf2d608dc3001dcb89d6c6a9f25,a\5\a58c7edae35049075fa4e77b1ea5dc1daf48e8bc
+`
+0app/src/main/java/com/example/compose/MainApp.kt,5\5\550c1df905422a030b5f36ae0929cef748466ee0
+h
+8app/src/main/java/com/example/compose/ui/MainActivity.kt,4\c\4cf4e5e33fb2c4c390ff7a7c07334bbbe3c9fb2a

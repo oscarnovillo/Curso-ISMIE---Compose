@@ -98,6 +98,12 @@ dependencies {
     // Hilt
     implementation(libs.hilt.core)
     implementation(libs.hilt.compose)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
+
+
+
+
     kapt(libs.hilt.compiler)
 
     //Room

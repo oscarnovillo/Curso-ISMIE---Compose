@@ -1,4 +1,4 @@
-package com.example.compose
+package com.example.compose.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,22 +19,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import com.example.compose.R
+import com.example.compose.ui.sumar.SumarScreen
 import com.example.compose.ui.theme.ComposeAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-           MyScreen("abkabakbjkja")
+           SumarScreen()
         }
     }
 }
@@ -54,24 +54,27 @@ fun MyScreen(
             Box(
                 contentAlignment = Alignment.BottomCenter,
 
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .clip(RoundedCornerShape(15.dp))
                     .background(MaterialTheme.colorScheme.error),
 
                 ) {
                 Greeting(name = name,
-                        modifier = Modifier.align(Alignment.Center)
-                            .offset(y = -200.dp)
+                        modifier = Modifier
+                            .align(Alignment.Center)
                             .border(2.dp, MaterialTheme.colorScheme.primary)
                             .padding(16.dp)
                     )
                 Greeting(name = "otro nombre")
                 Row( modifier = Modifier.align(Alignment.TopStart)){
-                    Greeting(name = "row1", modifier = Modifier.padding(16.dp)
+                    Greeting(name = stringResource(R.string.sumar), modifier = Modifier
+                        .padding(16.dp)
                         .weight(0.3f))
                     Greeting(name = "row2",
-                            modifier = Modifier.padding(16.dp)
-                            .weight(0.1f)
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .weight(0.1f)
                                 )
                 }
             }
@@ -85,6 +88,7 @@ fun MyScreen(
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
+        modifier = modifier,
 
     )
 }
