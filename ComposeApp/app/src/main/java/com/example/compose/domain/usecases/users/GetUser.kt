@@ -1,4 +1,4 @@
-package com.example.primerxmlmvvm.domain.usecases.users
+package com.example.compose.domain.usecases.users
 
 import com.example.compose.data.UsersRepository
 import javax.inject.Inject

@@ -3,7 +3,7 @@ package com.example.compose.data
 import com.example.compose.data.local.CocheDao
 import com.example.primerxmlmvvm.data.local.modelo.toCoche
 import com.example.primerxmlmvvm.data.local.modelo.toCocheEntity
-import com.example.primerxmlmvvm.di.IoDispatcher
+import com.example.compose.di.IoDispatcher
 import com.example.compose.domain.modelo.Coche
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.example.primerxmlmvvm.di
+package com.example.compose.di
 
 import dagger.Module
 import dagger.Provides
