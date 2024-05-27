@@ -10,18 +10,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.compose.ui.navigation.AppDestination
-import com.example.compose.ui.navigation.Screens
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     navController: NavController,
-    screens: List<Screens>,
+    screens: List<AppDestination>,
 ) {
-    val state = navController.currentBackStackEntryAsState()
+    val state by navController.currentBackStackEntryAsState()
+
+
 
     CenterAlignedTopAppBar(
 
@@ -31,7 +34,7 @@ fun TopBar(
         ),
         title = {
             Text(
-                text = screens.find { it.route == state.value?.destination?.route }?.title ?: "",
+                text = screens.find { screen -> state?.destination?.route?.startsWith(screen.route) ?: false }?.title ?: "",
             )
 
         },

@@ -10,24 +10,9 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 
 
-val screensList = listOf(Sumar,ListadoCoches,DetalleCoche,ListadoUsers,DetalleUser)
-
-val screens = listOf(
-    Screens("sumar","Sumar",true,icon = Icons.Filled.Favorite),
-    Screens("listadoCoches","coches",true,icon = Icons.Rounded.AddCircle),
-    Screens("detalleCoche/{cocheId}","detalle coche"),
-    Screens("listadoUsers","Users",true,icon = Icons.Outlined.Build),
-    Screens("detalleUser/{userId}","detalle user"),
-)
-
-data class Screens(val route: String,
-    val title: String = route,
-    val onBottomBar: Boolean = false,
-    val icon: ImageVector? = null)
 
 
-
-
+val appDestinationList = listOf(Sumar,ListadoCoches,DetalleCoche,ListadoUsers,DetalleUser)
 interface AppDestination{
     val route: String
     val title: String
@@ -61,8 +46,8 @@ object ListadoUsers : AppMainBottomDestination {
 }
 
 object DetalleCoche : AppDestination {
-    override val route = "detalleCoche/{cocheId}"
-    override val title = "detalle coche"
+    override val route = "detalleCoche"
+    override val title = "Detalle Coche"
     const val cocheIdArg = "cocheId"
     val routeWithArgs = "$route/{$cocheIdArg}"
     val arguments = listOf(
@@ -71,8 +56,8 @@ object DetalleCoche : AppDestination {
 }
 
 object DetalleUser : AppDestination {
-    override val route = "detalleUser/{userId}"
-    override val title = "detalle user"
+    override val route = "detalleUser"
+    override val title = "Detalle User"
     const val userIdArg = "userId"
     val routeWithArgs = "${route}/{$userIdArg}"
     val arguments = listOf(

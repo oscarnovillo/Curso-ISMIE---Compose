@@ -22,20 +22,20 @@ fun Navigation()
 
     val bottomBar : @Composable () -> Unit ={ BottomBar(
         navController = navController,
-        screens = screens
+        screens = appDestinationList
     ) }
     val topBar : @Composable () -> Unit = { TopBar(
         navController = navController,
-        screens = screens
+        screens = appDestinationList
     ) }
 
 
     NavHost(
         navController = navController,
-        startDestination = "sumar",
+        startDestination = Sumar.route,
     ) {
         composable(
-            route= "sumar"
+            route= Sumar.route
         ) {
             SumarScreen(bottomBar = bottomBar,
                 topBar = topBar,
@@ -44,16 +44,11 @@ fun Navigation()
 
         }
         composable(
-            route =  "detalleCoche/{cocheId}",
-            arguments = listOf(
-                navArgument(name = "cocheId") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
+            route =  DetalleCoche.routeWithArgs,
+            arguments = DetalleCoche.arguments
         ) {
             DetalleCochesScreen(
-                cocheId = it.arguments?.getString("cocheId") ?: "",
+                cocheId = it.arguments?.getString(DetalleCoche.cocheIdArg) ?: "",
                 bottomBar = bottomBar,
                 topBar = topBar,
                 onNavigateBack = {
@@ -62,44 +57,39 @@ fun Navigation()
             )
         }
         composable(
-            "listadoCoches"
+            ListadoCoches.route
         ) {
 
             ListadoCochesScreen(
                 bottomBar = bottomBar,
                 topBar = topBar,
                 onNavigateDetalle = {
-                    navController.navigate("detalleCoche/$it")
+                    navController.navigate("${DetalleCoche.route}/$it")
                 }
 
             )
 
         }
         composable(
-            "listadoUsers"
+            ListadoUsers.route
         ) {
 
             ListadoUsersScreen(
                 bottomBar = bottomBar,
                 topBar = topBar,
                 onNavigateDetalle = {
-                    navController.navigate("detalleUser/$it")
+                    navController.navigate("${DetalleUser.route}/$it")
                 }
 
             )
 
         }
         composable(
-            route =  "detalleUser/{userId}",
-            arguments = listOf(
-                navArgument(name = "userId") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
+            route =  DetalleUser.routeWithArgs,
+            arguments = DetalleUser.arguments
         ) {
             DetalleUserScreen(
-                userId = it.arguments?.getString("userId") ?: "",
+                userId = it.arguments?.getString(DetalleUser.userIdArg) ?: "",
                 bottomBar = bottomBar,
                 topBar = topBar,
                 onNavigateBack = {
