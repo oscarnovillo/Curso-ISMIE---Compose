@@ -9,14 +9,13 @@ interface DetalleContract {
         class GetCoche(val matricula: String) : DetalleEvent()
         object DelCoche : DetalleEvent()
 
-        object MensajeMostrado : DetalleEvent()
         object UiEventDone : DetalleEvent()
     }
 
     data class DetalleState(
         val coche: Coche? = null,
         val isLoading: Boolean = false,
-        val uiEvent: UiEvent? = null,
+        val uiEvent: List<UiEvent?> = emptyList(),
 
         )
 }

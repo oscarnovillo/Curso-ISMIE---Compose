@@ -1,13 +1,28 @@
 package com.example.compose.ui.navigation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.ui.coches.detalle.DetalleCochesScreen
 import com.example.compose.ui.coches.listado.ListadoCochesScreen
@@ -16,6 +31,7 @@ import com.example.compose.ui.common.TopBar
 import com.example.compose.ui.sumar.SumarScreen
 import com.example.compose.ui.users.detalle.DetalleUserScreen
 import com.example.compose.ui.users.listado.ListadoUsersScreen
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,8 +39,36 @@ import com.example.compose.ui.users.listado.ListadoUsersScreen
 fun Navigation()
 {
     val navController = rememberNavController()
-    val topAppbarState by remember {
-        mutableStateOf(TopBarState())
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val showSnackbar = { message:String,showUndo: Boolean,undo:()->Unit  ->
+        scope.launch {
+            if (showUndo) {
+                val result = snackbarHostState.showSnackbar(
+                    message,
+                    actionLabel = "UNDO",
+                    duration = SnackbarDuration.Short
+                )
+                if (result == SnackbarResult.ActionPerformed) {
+                    undo()
+                }
+            }
+            else {
+                snackbarHostState.showSnackbar(
+                    message,
+                    duration = SnackbarDuration.Short
+                )
+            }
+        }
+    }
+
+
+
+    val state by navController.currentBackStackEntryAsState()
+
+    val screen = appDestinationList.find { screen ->
+        state?.destination?.route?.startsWith(screen.route) == true
     }
 
 
@@ -33,90 +77,114 @@ fun Navigation()
         screens = appDestinationList
     ) }
     val topBar : @Composable () -> Unit = { TopBar(
-        topBarState = topAppbarState,
         navController = navController,
-        screens = appDestinationList
+        screen = screen
     ) }
-
-
-    NavHost(
-        navController = navController,
-        startDestination = Sumar.route,
-    ) {
-        composable(
-            route= Sumar.route
-        ) {
-            topAppbarState.arrangement = Arrangement.Start
-            SumarScreen(bottomBar = bottomBar,
-                topBar = topBar,
-
-            )
-
-        }
-        composable(
-            route =  DetalleCoche.routeWithArgs,
-            arguments = DetalleCoche.arguments
-        ) {
-            topAppbarState.arrangement = Arrangement.Center
-
-            DetalleCochesScreen(
-                cocheId = it.arguments?.getString(DetalleCoche.cocheIdArg) ?: "",
-                bottomBar = bottomBar,
-                topBar = topBar,
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-            )
-        }
-        composable(
-            ListadoCoches.route
-        ) {
-            topAppbarState.arrangement = Arrangement.Center
-
-            ListadoCochesScreen(
-                bottomBar = bottomBar,
-                topBar = topBar,
-                onNavigateDetalle = {
-                    navController.navigate("${DetalleCoche.route}/$it")
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        bottomBar = bottomBar,
+        topBar = topBar,
+        floatingActionButton = {
+            if (screen?.scaffoldState?.fabVisible == true) {
+                FloatingActionButton(onClick = { showSnackbar("FAB CLICKED",false, {}) }) {
+                    Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
                 }
+            }
 
-            )
+        },
 
-        }
-        composable(
-            ListadoUsers.route
+    ) { innerPadding ->
+
+        NavHost(
+            navController = navController,
+            startDestination = Sumar.route,
+            modifier = Modifier.padding(innerPadding)
         ) {
-            topAppbarState.arrangement = Arrangement.Center
-            ListadoUsersScreen(
-                bottomBar = bottomBar,
-                topBar = topBar,
-                onNavigateDetalle = {
-                    navController.navigate("${DetalleUser.route}/$it")
-                }
+            composable(
+                route = Sumar.route
+            ) {
+                SumarScreen(
+                    showSnackbar = {showSnackbar(it,false,{})}
+                    )
 
-            )
+            }
+            composable(
+                route = DetalleCoche.routeWithArgs,
+                arguments = DetalleCoche.arguments
+            ) {
+                DetalleCochesScreen(
+                    cocheId = it.arguments?.getString(DetalleCoche.cocheIdArg) ?: "",
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    showSnackbar = {
+                       showSnackbar(it,false,{})
+                    },
+                    )
+            }
+            composable(
+                ListadoCoches.route
+            ) {
+                ListadoCochesScreen(
+                    onNavigateDetalle = {
+                        navController.navigate("${DetalleCoche.route}/$it")
+                    },
+                    showSnackbar = { mensaje,onUndo ->
+                        showSnackbar(mensaje,true,onUndo)
+                    },
+
+                )
+
+            }
+            composable(
+                ListadoUsers.route
+            ) {
+                ListadoUsersScreen(
+
+                    onNavigateDetalle = {
+                        navController.navigate("${DetalleUser.route}/$it")
+                    },
+                    showSnackbar = {
+                        showSnackbar(it,false,{})
+                    },
+
+                )
+
+            }
+            composable(
+                route = DetalleUser.routeWithArgs,
+                arguments = DetalleUser.arguments
+            ) {
+                DetalleUserScreen(
+                    userId = it.arguments?.getString(DetalleUser.userIdArg) ?: "",
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    },
+                    showSnackbar = {mensaje ->
+                        showSnackbar(mensaje,false,{})
+                    },
+                )
+            }
+
 
         }
-        composable(
-            route =  DetalleUser.routeWithArgs,
-            arguments = DetalleUser.arguments
-        ) {
-            topAppbarState.arrangement = Arrangement.Center
-            DetalleUserScreen(
-                userId = it.arguments?.getString(DetalleUser.userIdArg) ?: "",
-                bottomBar = bottomBar,
-                topBar = topBar,
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-            )
-        }
-
 
     }
 
+}
 
 
+
+fun NavGraphBuilder.Sumar(
+    showSnackbar: (String) -> Unit
+) {
+    composable(
+        route = Sumar.route
+    ) {
+        SumarScreen(
+            showSnackbar = showSnackbar
+        )
+    }
 }
 
 

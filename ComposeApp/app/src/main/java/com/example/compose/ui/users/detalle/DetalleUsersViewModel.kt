@@ -54,17 +54,19 @@ class DetalleUsersViewModel @Inject constructor(
             }
 
             is DetalleUsersEvent.DelUser -> viewModelScope.launch(dispatcher) {
-                delUser.invoke(event.id).collect {result ->
-                    when (result) {
-                        is NetworkResult.Success -> {
-                            _uiState.update {
-                                it.copy(uiEvent = UiEvent.PopBackStack, isLoading = false)
+                _uiState.value.user?.let { user ->
+                    delUser.invoke(user.id).collect { result ->
+                        when (result) {
+                            is NetworkResult.Success -> {
+                                _uiState.update {
+                                    it.copy(uiEvent = UiEvent.PopBackStack, isLoading = false)
+                                }
                             }
+
+                            is NetworkResult.Error -> tratarError(result.message)
+
+                            is NetworkResult.Loading -> _uiState.update { it.copy(isLoading = true) }
                         }
-
-                        is NetworkResult.Error -> tratarError(result.message)
-
-                        is NetworkResult.Loading -> _uiState.update { it.copy(isLoading = true) }
                     }
                 }
             }

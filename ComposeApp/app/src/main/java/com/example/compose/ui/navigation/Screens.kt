@@ -1,5 +1,6 @@
 package com.example.compose.ui.navigation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
 
 import androidx.compose.material.icons.filled.Favorite
@@ -16,12 +17,15 @@ val appDestinationList = listOf(Sumar,ListadoCoches,DetalleCoche,ListadoUsers,De
 interface AppDestination{
     val route: String
     val title: String
+    val scaffoldState: ScaffoldState
+        get() = ScaffoldState()
 
 }
 
 interface AppMainBottomDestination : AppDestination {
     val onBottomBar: Boolean
     val icon: ImageVector
+
 }
 
 object Sumar : AppMainBottomDestination {
@@ -29,6 +33,10 @@ object Sumar : AppMainBottomDestination {
     override val title = "Sumar"
     override val onBottomBar = true
     override val icon = Icons.Filled.Favorite
+    override val scaffoldState = ScaffoldState(
+        topBarState =TopBarState(showNavigationIcon = false, arrangement = Arrangement.Start),
+        fabVisible = true
+    )
 }
 
 object ListadoCoches : AppMainBottomDestination {

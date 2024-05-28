@@ -31,9 +31,7 @@ class DetalleViewModel @Inject constructor(
 
     fun handleEvent(event: DetalleEvent) {
         when (event) {
-            DetalleEvent.MensajeMostrado -> {
-                _uiState.update{ it.copy(uiEvent = null)}
-            }
+
 
             is DetalleEvent.GetCoche ->
                 viewModelScope.launch(dispatcher) {
@@ -42,15 +40,16 @@ class DetalleViewModel @Inject constructor(
 
             DetalleEvent.DelCoche -> {
                 viewModelScope.launch(dispatcher) {
-                    _uiState.value.coche?.let {
-                        delCoche(it)
-                        _uiState.update{it.copy(uiEvent = UiEvent.Navigate("listado"))}
+                    _uiState.value.coche?.let { coche ->
+                        delCoche(coche)
+                        _uiState.update{it.copy(
+                            uiEvent = listOf(UiEvent.Navigate("listado"),UiEvent.ShowSnackbar("coche eliminado")))}
                     }
                 }
             }
 
             DetalleEvent.UiEventDone ->{
-                _uiState.update {it.copy(uiEvent = null)}
+                _uiState.update {it.copy(uiEvent = emptyList())}
             }
         }
     }

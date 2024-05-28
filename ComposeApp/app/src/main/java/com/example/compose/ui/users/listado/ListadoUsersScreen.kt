@@ -43,26 +43,26 @@ import com.example.compose.ui.users.listado.ListadoContract.ListadoEvent
 @Composable
 fun ListadoUsersScreen(
     listadoViewModel: ListadoViewModel = hiltViewModel(),
-    bottomBar: @Composable () -> Unit = {},
-    topBar: @Composable () -> Unit = {},
+
     onNavigateDetalle: (Int) -> Unit = {},
+    showSnackbar: (String) -> Unit = {},
 
 
     ) {
     val uiState by listadoViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+
 
 
     LaunchedEffect(Unit) {
         listadoViewModel.handleEvent(ListadoEvent.GetUsers)
     }
+
     ListadoContent(
         users = uiState.users,
         isLoading = uiState.isLoading,
-        bottomBar = bottomBar,
-        topBar = topBar,
+
         onNavigateDetalle = onNavigateDetalle,
-        snackbarHostState = snackbarHostState,
+
         onDeleteUser = { user -> listadoViewModel.handleEvent(ListadoEvent.DeleteUser(user)) }
 
     )
@@ -70,7 +70,7 @@ fun ListadoUsersScreen(
     LaunchedEffect(uiState.uiEvent) {
         uiState.uiEvent?.let {
             if (it is UiEvent.ShowSnackbar) {
-                snackbarHostState.showSnackbar(it.message)
+                showSnackbar(it.message)
             }
             listadoViewModel.handleEvent(ListadoEvent.UiEventDone)
         }
@@ -83,51 +83,44 @@ fun ListadoContent(
     users: List<User>,
     isLoading: Boolean,
     onNavigateDetalle: (Int) -> Unit,
-    bottomBar: @Composable () -> Unit = {},
-    topBar: @Composable () -> Unit = {},
+
     onDeleteUser: (User) -> Unit = {},
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
-) {
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        bottomBar = bottomBar,
-        topBar = topBar,
-    ) { innerPadding ->
-        if (isLoading) {
-            Box(
+
+    ) {
+
+    if (isLoading) {
+        Box(
+            modifier = Modifier
+
+                .fillMaxSize()
+        ) {
+            CircularProgressIndicator(
                 modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .width(64.dp)
-                        .align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    .width(64.dp)
+                    .align(Alignment.Center),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
 
-                    )
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-            ) {
-
-                this.items(items = users, key = { user -> user.id }) { user ->
-                    UserItem(
-                        user = user,
-                        onNavigateDetalle = onNavigateDetalle,
-                        onDeleteUser = onDeleteUser
-                    )
-                }
-
-            }
+                )
         }
+    } else {
+        LazyColumn(
+            modifier = Modifier
 
+                .fillMaxSize()
+        ) {
 
+            this.items(items = users, key = { user -> user.id }) { user ->
+                UserItem(
+                    user = user,
+                    onNavigateDetalle = onNavigateDetalle,
+                    onDeleteUser = onDeleteUser
+                )
+            }
+
+        }
     }
+
 
 }
 
@@ -139,15 +132,17 @@ fun UserItem(
     onNavigateDetalle: (Int) -> Unit,
     onDeleteUser: (User) -> Unit
 ) {
-    SwipeToDeleteContainer(item =user , onDelete = onDeleteUser) {
-        Card(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(1.dp)
-            .combinedClickable(
-                onClick = { onNavigateDetalle(user.id) },
-                onLongClick = {  },
-            )) {
+    SwipeToDeleteContainer(item = user, onDelete = onDeleteUser) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(1.dp)
+                .combinedClickable(
+                    onClick = { onNavigateDetalle(user.id) },
+                    onLongClick = { },
+                )
+        ) {
             Row(
                 modifier = Modifier
                     .padding(4.dp),
@@ -179,7 +174,9 @@ fun UserItem(
                         )
                 }
                 SubcomposeAsyncImage(
-                    modifier = Modifier.width(75.dp).height(75.dp),
+                    modifier = Modifier
+                        .width(75.dp)
+                        .height(75.dp),
                     model = user.fotoUrl,
                     loading = {
                         CircularProgressIndicator()

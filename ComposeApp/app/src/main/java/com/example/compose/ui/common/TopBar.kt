@@ -20,53 +20,52 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.compose.ui.navigation.AppDestination
+import com.example.compose.ui.navigation.Sumar
 import com.example.compose.ui.navigation.TopBarState
+import com.example.compose.ui.sumar.SumarScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     navController: NavController,
-    screens: List<AppDestination>,
-    topBarState: TopBarState,
+    screen: AppDestination?,
+
 ) {
-    val state by navController.currentBackStackEntryAsState()
 
+    screen?.let {destination ->
+        TopAppBar(
 
-
-    TopAppBar(
-
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ),
-        title = {
-            Row(modifier= Modifier.fillMaxWidth(),
-                horizontalArrangement = topBarState.arrangement
-            ) {
-                Text(
-                    text = screens.find { screen ->
-                        state?.destination?.route?.startsWith(screen.route) ?: false
-                    }?.title ?: "",
-                )
-            }
-
-        },
-        navigationIcon = {
-
-            if (navController.backQueue.size > 2) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Localized description"
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.primary,
+            ),
+            title = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = destination.scaffoldState.topBarState.arrangement
+                ) {
+                    Text(
+                        text = destination.title,
                     )
                 }
-            }
 
-        },
-        actions = topBarState.actions,
-        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-    )
+            },
+            navigationIcon = {
 
+                if (destination.scaffoldState.topBarState.showNavigationIcon) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                }
+
+            },
+            actions = destination.scaffoldState.topBarState.actions,
+            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+        )
+    }
 
 }

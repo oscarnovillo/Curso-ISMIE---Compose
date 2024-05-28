@@ -6,7 +6,7 @@ import com.example.compose.ui.common.UiEvent
 interface DetalleUsersContract {
     sealed class DetalleUsersEvent {
         class GetUser(val id: Int) : DetalleUsersEvent()
-        class DelUser(val id: Int) : DetalleUsersEvent()
+        object DelUser : DetalleUsersEvent()
         object UiEventDone : DetalleUsersEvent()
     }
 

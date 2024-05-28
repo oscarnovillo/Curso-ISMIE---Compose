@@ -40,6 +40,9 @@ fun <T> SwipeToDeleteContainer(
     var isRemoved by remember {
         mutableStateOf(false)
     }
+
+
+
     val state = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
             if (value == SwipeToDismissBoxValue.EndToStart) {
@@ -50,6 +53,7 @@ fun <T> SwipeToDeleteContainer(
             }
         }
     )
+
 
     LaunchedEffect(key1 = isRemoved) {
         if (isRemoved) {

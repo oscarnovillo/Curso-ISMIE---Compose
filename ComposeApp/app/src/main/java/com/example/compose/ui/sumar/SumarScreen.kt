@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.compose.ui.common.UiEvent
 import com.example.compose.ui.navigation.TopBarState
 import kotlinx.coroutines.Dispatchers
 
@@ -29,10 +30,7 @@ import kotlinx.coroutines.Dispatchers
 fun SumarScreen(
 
     sumaViewModel: SumaViewModel = hiltViewModel(),
-    bottomBar: @Composable () -> Unit = {},
-    topBar: @Composable () -> Unit = {},
-
-
+    showSnackbar: (String) -> Unit = {},
     ) {
 
 
@@ -41,20 +39,18 @@ fun SumarScreen(
         initial = null,
         context = Dispatchers.Main.immediate,
     )
-    val snackbarHostState = remember { SnackbarHostState() }
+
 
     SumarContent(
         uiState = uiState,
-        bottomBar = bottomBar,
-        topBar = topBar,
+
         onSumar = { incremento -> sumaViewModel.handleEvent(SumaEvent.Sumar(incremento)) },
         onRestar = { incremento -> sumaViewModel.handleEvent(SumaEvent.Restar(incremento)) },
-        snackbarHostState = snackbarHostState,
     )
 
     LaunchedEffect(uiError) {
         uiError?.let {
-            snackbarHostState.showSnackbar(it)
+            showSnackbar(it)
             sumaViewModel.handleEvent(SumaEvent.ErrorMostrado)
         }
     }
@@ -64,59 +60,49 @@ fun SumarScreen(
 @Composable
 fun SumarContent(
     uiState: SumaState,
-    bottomBar: @Composable () -> Unit = {},
-    topBar : @Composable () -> Unit = {},
     onSumar: (Int) -> Unit = {},
     onRestar: (Int) -> Unit = {},
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
 
     ) {
 
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        bottomBar = bottomBar,
-        topBar = topBar,
-    ) { innerPadding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+
+    ) {
 
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+        Column(
+
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+
         ) {
 
-
-            Column(
-
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
-
-            ) {
-
-                Text(
-                    text = uiState.contador.toString(),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Row(modifier = Modifier.padding(8.dp)) {
-                    Button(onClick = { onSumar(1) }) {
-                        Text(
-                            text = "Sumar"
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Button(onClick = { onRestar(1) }) {
-                        Text(
-                            text = "Restar"
-                        )
-                    }
+            Text(
+                text = uiState.contador.toString(),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Row(modifier = Modifier.padding(8.dp)) {
+                Button(onClick = { onSumar(1) }) {
+                    Text(
+                        text = "Sumar"
+                    )
                 }
-
-
+                Spacer(modifier = Modifier.padding(8.dp))
+                Button(onClick = { onRestar(1) }) {
+                    Text(
+                        text = "Restar"
+                    )
+                }
             }
+
+
         }
     }
+
 }
 
 @Preview(

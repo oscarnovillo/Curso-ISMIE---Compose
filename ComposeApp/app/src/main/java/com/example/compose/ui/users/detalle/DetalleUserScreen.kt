@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.compose.domain.modelo.User
 import com.example.compose.ui.coches.detalle.DetalleContract
 import com.example.compose.ui.common.UiEvent
 import com.example.compose.ui.users.detalle.DetalleUsersContract.DetalleUsersEvent
@@ -23,30 +24,26 @@ fun DetalleUserScreen(
     userId: String,
     detalleUserViewModel: DetalleUsersViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit = {},
-    topBar: @Composable () -> Unit = {},
-    bottomBar: @Composable () -> Unit = {},
+    showSnackbar: (String) -> Unit = {},
+
 
 
     ) {
 
     val uiState by detalleUserViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+
+
 
     DetalleUserContent(
-        uiState = uiState,
-        userId = userId,
-        bottomBar = bottomBar,
-        topBar = topBar,
-        snackbarHostState = snackbarHostState,
-        onNavigateBack = onNavigateBack,
-
+        user = uiState.user,
+        onDelete = { detalleUserViewModel.handleEvent(DetalleUsersEvent.DelUser) },
 
         )
 
     LaunchedEffect(uiState.uiEvent) {
         uiState.uiEvent?.let {
             if (it is UiEvent.ShowSnackbar) {
-                snackbarHostState.showSnackbar(it.message)
+                showSnackbar(it.message)
             } else if (it is UiEvent.Navigate) {
                 onNavigateBack()
             }
@@ -59,23 +56,14 @@ fun DetalleUserScreen(
 
 @Composable
 fun DetalleUserContent(
-    uiState: DetalleUsersContract.DetalleUsersState,
-    userId: String,
-    bottomBar: @Composable () -> Unit = {},
-    topBar: @Composable () -> Unit = {},
-    snackbarHostState: SnackbarHostState,
-    onNavigateBack: () -> Unit
+    user: User?,
+    onDelete: () -> Unit
 ) {
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        bottomBar = bottomBar,
-        topBar = topBar,
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            Text("Detalle de user ${userId}",
-                modifier = Modifier.clickable { onNavigateBack() })
+        Box() {
+            Text("Detalle de user ${user?.id}",
+                modifier = Modifier.clickable { onDelete() })
         }
 
-    }
+
 
 }

@@ -12,15 +12,14 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,29 +34,32 @@ import java.time.LocalDate
 @Composable
 fun ListadoCochesScreen(
     listadoViewModel: ListadoViewModel = hiltViewModel(),
-    bottomBar: @Composable () -> Unit = {},
-    topBar: @Composable () -> Unit = {},
+    showSnackbar: (String,()->Unit) -> Unit ,
     onNavigateDetalle: (String) -> Unit = {},
 
 
     ) {
     val uiState by listadoViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+    var undo by remember { mutableStateOf(false) }
+
 
     ListadoContent(
         coches = uiState.coches,
-        bottomBar = bottomBar,
-        topBar = topBar,
+        undo = undo,
+
         onNavigateDetalle = onNavigateDetalle,
-        snackbarHostState = snackbarHostState,
+
         onDeleteCoche = { coche -> listadoViewModel.handleEvent(ListadoEvent.DeleteCoche(coche)) }
 
-        )
+    )
 
     LaunchedEffect(uiState.event) {
         uiState.event?.let {
             if (it is UiEvent.ShowSnackbar) {
-                snackbarHostState.showSnackbar(it.message)
+                showSnackbar(it.message) {
+                    listadoViewModel.handleEvent(ListadoEvent.UndoDeleteCoche)
+                    undo = true
+                }
             }
             listadoViewModel.handleEvent(ListadoEvent.UiEventDone)
         }
@@ -69,29 +71,29 @@ fun ListadoCochesScreen(
 fun ListadoContent(
     coches: List<Coche>,
     onNavigateDetalle: (String) -> Unit,
-    bottomBar: @Composable () -> Unit = {},
-    topBar: @Composable () -> Unit = {},
+
     onDeleteCoche: (Coche) -> Unit,
-    snackbarHostState: SnackbarHostState = SnackbarHostState(),
-) {
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        bottomBar = bottomBar,
-        topBar = topBar,
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-        ) {
+    undo: Boolean,
 
-            this.items(items = coches, key = { coche -> coche.matricula }) { coche ->
-                CocheItem(coche = coche, onNavigateDetalle = onNavigateDetalle,onDeleteCoche= onDeleteCoche)
-            }
+    ) {
 
+    LazyColumn(
+        modifier = Modifier
+
+            .fillMaxSize()
+    ) {
+
+        this.items(items = coches, key = { coche -> coche.matricula }) { coche ->
+            CocheItem(
+                coche = coche,
+                onNavigateDetalle = onNavigateDetalle,
+                onDeleteCoche = onDeleteCoche,
+                undo = undo,
+            )
         }
 
     }
+
 
 }
 
@@ -100,8 +102,9 @@ fun CocheItem(
     coche: Coche,
     onNavigateDetalle: (String) -> Unit,
     onDeleteCoche: (Coche) -> Unit,
+    undo: Boolean,
 ) {
-    SwipeToDeleteContainer(item =coche , onDelete = onDeleteCoche) {
+    SwipeToDeleteContainer(item = coche, onDelete = onDeleteCoche) {
         Card(modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
@@ -152,9 +155,10 @@ fun PreviewListadoCochesScreen() {
         ),
         onNavigateDetalle = {},
         onDeleteCoche = {},
+        undo = false,
 
 
-    )
+        )
 }
 
 
