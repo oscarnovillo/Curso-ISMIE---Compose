@@ -265,3 +265,7 @@ i
 Lapp/src/main/java/com/example/compose/ui/users/listado/ListadoUsersScreen.kt,4\a\4afdfc3defd859ac4e3d58350e4e92e626b196cc
 {
 Kapp/src/main/java/com/example/compose/ui/users/detalle/DetalleUserScreen.kt,9\0\90b9778873ae440b687a56893e0090e209619e0d
+r
+Bapp/src/main/java/com/example/compose/ui/navigation/TopBarState.kt,d\d\ddc59c3205355fd84246d398af163a62ee3e1ff7
+q
+Aapp/src/main/java/com/example/compose/ui/common/SwipeToDismiss.kt,a\d\ad93dae11734432052eb1944532da61ed56d9348

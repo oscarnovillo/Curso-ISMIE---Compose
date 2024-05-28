@@ -9,5 +9,5 @@ data class User(
     val phone: String,
     val username: String,
     val website: String,
-    var fotoUrl: String = "https://thispersondoesnotexist.com/",
+    var fotoUrl: String = "https://thispersondoesnotexist.com/?${(0..1000).random()}",
 )

@@ -6,7 +6,8 @@ import com.example.compose.ui.common.UiEvent
 interface ListadoContract {
 
     sealed class ListadoEvent {
-        object getUsers : ListadoEvent()
+        object GetUsers : ListadoEvent()
+        class DeleteUser(val user: User) : ListadoEvent()
 
         object UiEventDone: ListadoEvent()
     }

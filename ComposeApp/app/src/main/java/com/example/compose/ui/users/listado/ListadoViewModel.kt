@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.compose.data.remote.NetworkResult
 import com.example.compose.di.IoDispatcher
+import com.example.compose.domain.modelo.User
+import com.example.compose.domain.usecases.users.DelUser
 import com.example.compose.domain.usecases.users.GetUsers
 import com.example.compose.ui.common.UiEvent
 import com.example.compose.ui.users.listado.ListadoContract.ListadoEvent
@@ -22,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ListadoViewModel @Inject constructor(
     val getUsers: GetUsers,
+    val delUser: DelUser,
     @IoDispatcher val dispatcher: CoroutineDispatcher
 
 ) : ViewModel() {
@@ -36,28 +39,63 @@ class ListadoViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(uiEvent = null)
             }
 
-            ListadoEvent.getUsers ->
-                viewModelScope.launch(dispatcher) {
-                    getUsers.invoke().collect{ result ->
-                        when (result) {
-                            is NetworkResult.Error -> _uiState.update {
-                                it.copy(uiEvent = UiEvent.ShowSnackbar(result.message?: ""), isLoading = false) }
+            ListadoEvent.GetUsers ->
+                getUsers()
 
-                            is NetworkResult.Loading -> _uiState.update{
-                                it.copy(isLoading = true)}
+            is ListadoEvent.DeleteUser -> delUser(event.user)
+        }
 
-                            is NetworkResult.Success -> _uiState.update {
-                                it.copy(users = result.data ?: emptyList(), isLoading = false)}
+
+    }
+
+    private fun delUser(user: User) {
+        viewModelScope.launch(dispatcher) {
+            delUser.invoke(user.id).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                uiEvent = UiEvent.ShowSnackbar("ususario borrado"),
+                                isLoading = false
+                            )
                         }
-
                     }
+
+                    is NetworkResult.Error -> _uiState.update {
+                        it.copy(
+                            uiEvent = UiEvent.ShowSnackbar(result.message ?: ""),
+                            isLoading = false
+                        )
+                    }
+
+
+                    is NetworkResult.Loading -> _uiState.update { it.copy(isLoading = true) }
                 }
-
-
+            }
         }
     }
 
+    private fun getUsers() {
+        viewModelScope.launch(dispatcher) {
+            getUsers.invoke().collect { result ->
+                when (result) {
+                    is NetworkResult.Error -> _uiState.update {
+                        it.copy(
+                            uiEvent = UiEvent.ShowSnackbar(result.message ?: ""),
+                            isLoading = false
+                        )
+                    }
 
+                    is NetworkResult.Loading -> _uiState.update {
+                        it.copy(isLoading = true)
+                    }
 
+                    is NetworkResult.Success -> _uiState.update {
+                        it.copy(users = result.data ?: emptyList(), isLoading = false)
+                    }
+                }
 
+            }
+        }
+    }
 }
