@@ -9,21 +9,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.compose.ui.common.UiEvent
-import com.example.compose.ui.navigation.TopBarState
 import kotlinx.coroutines.Dispatchers
 
 @Composable
@@ -31,7 +29,7 @@ fun SumarScreen(
 
     sumaViewModel: SumaViewModel = hiltViewModel(),
     showSnackbar: (String) -> Unit = {},
-    ) {
+) {
 
 
     val uiState by sumaViewModel.uiState.collectAsState()
@@ -42,8 +40,15 @@ fun SumarScreen(
 
 
     SumarContent(
-        uiState = uiState,
-
+        contador = uiState.contador,
+        incremento = uiState.incremento,
+        onIncrementoChange = { incremento ->
+            sumaViewModel.handleEvent(
+                SumaEvent.ChangeIncremento(
+                    incremento
+                )
+            )
+        },
         onSumar = { incremento -> sumaViewModel.handleEvent(SumaEvent.Sumar(incremento)) },
         onRestar = { incremento -> sumaViewModel.handleEvent(SumaEvent.Restar(incremento)) },
     )
@@ -59,7 +64,9 @@ fun SumarScreen(
 
 @Composable
 fun SumarContent(
-    uiState: SumaState,
+    contador: Int,
+    incremento: Int,
+    onIncrementoChange: (Int) -> Unit,
     onSumar: (Int) -> Unit = {},
     onRestar: (Int) -> Unit = {},
 
@@ -80,24 +87,32 @@ fun SumarContent(
             modifier = Modifier.fillMaxSize()
 
         ) {
+            var incrementoLocal by remember {
+                mutableStateOf(1)
+            }
 
             Text(
-                text = uiState.contador.toString(),
+                text = contador.toString(),
                 style = MaterialTheme.typography.bodyMedium
             )
             Row(modifier = Modifier.padding(8.dp)) {
-                Button(onClick = { onSumar(1) }) {
+                Button(onClick = { onSumar(incrementoLocal) }) {
                     Text(
                         text = "Sumar"
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
-                Button(onClick = { onRestar(1) }) {
+                Button(onClick = { onRestar(incrementoLocal) }) {
                     Text(
                         text = "Restar"
                     )
                 }
             }
+
+
+            TextField(
+                value = incrementoLocal.toString(),
+                onValueChange = { incrementoLocal = it.toInt() })
 
 
         }
@@ -114,6 +129,6 @@ fun SumarContent(
 )
 @Composable
 fun PreviewSumarScreen() {
-    var uiState = SumaState(1, null)
-    SumarContent(uiState = uiState, onSumar = { })
+    var uiState = SumaState(1, 1, null)
+    SumarContent(contador = 1, incremento = 1, onIncrementoChange = {}, onSumar = { })
 }

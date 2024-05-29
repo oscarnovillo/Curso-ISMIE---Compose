@@ -21,7 +21,7 @@ class SumaViewModel @Inject constructor(
     private val stringProvider: StringProvider,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SumaState(0,null))
+    private val _uiState = MutableStateFlow(SumaState(0,1,null))
     val uiState: StateFlow<SumaState> get() = _uiState
 
 
@@ -41,6 +41,7 @@ class SumaViewModel @Inject constructor(
             is SumaEvent.Restar -> restar(event.incremento)
 
             is SumaEvent.Sumar -> sumar(event.incremento)
+            is SumaEvent.ChangeIncremento -> _uiState.update { it.copy(incremento = event.incremento) }
         }
     }
 
